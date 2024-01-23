@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+    ros2:
+        image: tiryoh/ros2-desktop-vnc:humble
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - '6080:80'
+        security_opt:
+            - seccomp:unconfined

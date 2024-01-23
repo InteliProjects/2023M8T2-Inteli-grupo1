@@ -1,0 +1,8 @@
+{
+  "label": "Programação",
+  "position": 5,
+  "link": {
+    "type": "generated-index",
+    "description": "Nessa seção, abordamos assuntos relativos ao desenvolvimento da solução em si, como a arquitetura do sistema, a escolha das tecnologias utilizadas, a implementação de funcionalidades e a integração com outros sistemas."
+  }
+}

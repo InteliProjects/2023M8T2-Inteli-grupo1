@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+    database:
+        image: postgres:16.1-alpine
+        container_name: database
+        environment:
+            - POSTGRES_DB=plataform
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - '5432:5432'
+        volumes:
+            - ./.cache/db:/var/lib/postgresql/data
+        healthcheck:
+            test: ['CMD', 'pg_isready', '-U', 'postgres']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    makemigrations:
+        build: .
+        volumes:
+            - .:/plataform
+        image: makemigrations:plataform
+        container_name: makemigrations
+        command: python manage.py makemigrations --noinput
+        depends_on:
+            database:
+                condition: service_healthy
+
+    migrate:
+        build: .
+        volumes:
+            - .:/plataform
+        image: migrate:plataform
+        container_name: migrate
+        command: python manage.py migrate
+        depends_on:
+            database:
+                condition: service_healthy
+            makemigrations:
+                condition: service_completed_successfully
+    app:
+        build: .
+        volumes:
+            - .:/plataform
+        ports:
+            - '8000:8000'
+        image: app:plataform
+        container_name: plataform
+        command: python manage.py runserver 0.0.0.0:8000
+        depends_on:
+            database:
+                condition: service_healthy
+            migrate:
+                condition: service_completed_successfully

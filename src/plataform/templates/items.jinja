@@ -1,0 +1,175 @@
+{% extends "base.jinja" %}
+{% load static %}
+
+{% block title %}
+    Itens
+{% endblock title %}
+
+{% block content %}
+    <div class="flex flex-row w-full mt-6">
+
+        <div class="flex-1 flex flex-col justify-center items-center">
+            <div class="w-full lg:w-1/2">
+                <h1 class="text-2xl font-bold mb-4">Cadastro de item</h1>
+                <form id="createItemForm" class="w-full max-w-md">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        <label for="name-field" class="block text-gray-700 text-sm font-bold mb-2">Item:</label>
+                        <input type="text"
+                               placeholder="Nome do item"
+                               id="name-field"
+                               name="name"
+                               required
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+
+
+                    <div class="mb-4">
+                        <label for="image-field" class="block text-gray-700 text-sm font-bold mb-2">Imagem:</label>
+                        <input type="text"
+                               placeholder="URL da imagem"
+                               id="image-field"
+                               name="image"
+                               required
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="x-field" class="block text-gray-700 text-sm font-bold mb-2">Posição X:</label>
+                        <input type="number"
+                               min="-100"
+                               max="100"
+                               step="0.001"
+                               placeholder="Posição X"
+                               id="x-field"
+                               name="x"
+                               required
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="y-field" class="block text-gray-700 text-sm font-bold mb-2">Posição Y:</label>
+                        <input type="number"
+                               min="-100"
+                               max="100"
+                               step="0.001"
+                               placeholder="Posição Y"
+                               id="y-field"
+                               name="y"
+                               required
+                               class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+
+                    <div class="flex items-center justify-center">
+                        <button type="submit"
+                                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                            Adicionar item
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <img src="{% static 'characters/Maintenance-bro.svg' %}"
+                 alt="Ilustração de adicionar usuários"
+                 class="w-1/2">
+        </div>
+        <div class="flex-1 container mx-auto px-4 sm:px-32">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+                {% for item in items %}
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <img src="{{ item.image_url }}"
+                             alt="{{ item.item }}"
+                             class="object-cover w-full h-48 transition duration-300 ease-in-out hover:opacity-75">
+
+                        <div class="p-6">
+                            <h5 class="text-lg font-semibold text-gray-800 mb-2">{{ item.item }}</h5>
+                            <p class="text-gray-600 text-sm md:text-base">
+                                X: <span class="font-semibold text-gray-800">{{ item.x }}</span> | Y: <span class="font-semibold text-gray-800">{{ item.y }}</span>
+                            </p>
+
+                            <div class="flex justify-center mt-4">
+                                <button type="button"
+                                        id="submit-button"
+                                        class="py-2 px-4 bg-red-500 hover:bg-red-700 text-white font-bold rounded-lg transition duration-300 ease-in-out focus:outline-none focus:shadow-outline"
+                                        onclick="deleteItem({{ item.id }})">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24"
+                                         height="24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round">
+                                        <path d="M3 6h18" />
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m2 0V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2" />
+                                        <path d="M10 11v6" />
+                                        <path d="M14 11v6" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block script %}
+    <script>
+        function createItem(name, x, y, image_url) {
+            const url = window.location.origin + '/api/item/create/';
+            const data = {
+                item: name,
+                x: x,
+                y: y,
+                image_url: image_url
+            };
+
+            fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then(data => {
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function deleteItem(id) {
+            const url = window.location.origin + '/api/item/delete/';
+            const data = {
+                id: id
+            };
+            fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then(data => {
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        document.getElementById('createItemForm').addEventListener('submit', function(event) {
+            console.log("create form callback")
+            event.preventDefault();
+
+            const name = document.getElementById('name-field').value;
+            const x = document.getElementById('x-field').value;
+            const y = document.getElementById('y-field').value;
+            const image_url = document.getElementById('image-field').value;
+
+            createItem(name, x, y, image_url);
+        });
+    </script>
+{% endblock script %}

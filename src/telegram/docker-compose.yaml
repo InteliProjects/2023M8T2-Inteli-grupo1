@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  stt_service:
+    build:
+      context: ./stt
+      dockerfile: Dockerfile
+    volumes:
+      - ./audio:/app/audio

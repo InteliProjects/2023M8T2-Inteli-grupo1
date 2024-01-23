@@ -1,0 +1,8 @@
+{
+    "label": "Negócios",
+    "position": 2,
+    "link": {
+        "type": "generated-index",
+        "description": "A seção de negócios é dedicada a análises de mercado e viabilidade da solução."
+    }
+}

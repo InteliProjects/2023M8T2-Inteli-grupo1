@@ -1,0 +1,8 @@
+{
+  "label": "Apresentações",
+  "position": 7,
+  "link": {
+    "type": "generated-index",
+    "description": "Apresentações do projeto ao final de cada sprint."
+  }
+}

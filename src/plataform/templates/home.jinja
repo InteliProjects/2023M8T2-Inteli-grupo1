@@ -1,0 +1,17 @@
+{% extends "base.jinja" %}
+{% load static %}
+{% block title %}
+    Página inicial
+{% endblock title %}
+
+{% block content %}
+    <div class="flex flex-col w-full justify-center items-center mt-6">
+        <h1 class="text-4xl font-bold">Dashboard</h1>
+
+        <p class="text-xl">Bem vindo ao sistema de gerenciamento de requisições</p>
+
+        <img src="{% static 'characters/Server-cuate.svg' %}"
+             alt="Ilustração de um servidor"
+             class="w-1/2 mt-6">
+    </div>
+{% endblock content %}

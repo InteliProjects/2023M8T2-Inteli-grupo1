@@ -1,0 +1,170 @@
+{% extends "base.jinja" %}
+{% load static %}
+
+{% block title %}
+    Histórico
+{% endblock title %}
+
+{% block content %}
+    <div class="flex flex-col w-full justify-center items-center mt-6">
+        <div class="container mx-auto px-4 sm:px-8">
+            <div class="py-8">
+                <div class="flex flex-row mb-1 sm:mb-0 justify-between w-full">
+                    <h2 class="text-2xl font-semibold leading-tight">Histórico completo de requisições</h2>
+                    <button class="px-5 py-2.5 text-sm font-medium text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                            id="download-csv">
+                        <svg class="w-3.5 h-3.5 text-white me-2 rtl:rotate-180"
+                             aria-hidden="true"
+                             xmlns="http://www.w3.org/2000/svg"
+                             fill="currentColor"
+                             viewBox="0 0 16 20">
+                            <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2Zm-3 15H4.828a1 1 0 0 1 0-2h6.238a1 1 0 0 1 0 2Zm0-4H4.828a1 1 0 0 1 0-2h6.238a1 1 0 1 1 0 2Z" />
+                            <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z" />
+                        </svg>
+                        Download CSV
+                    </button>
+                </div>
+                <div class="-mx-4 sm:-mx-8 px-4 sm:px-8 py-4 overflow-x-auto">
+                    <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                        <table class="min-w-full leading-normal">
+                            <thead>
+                                <tr>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Solicitante
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Descrição do Item
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Quantidade
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Data / Hora
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                                        Status
+                                    </th>
+                                    <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in logs %}
+                                    <tr>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <div class="flex">
+                                                <div class="flex-shrink-0 w-10 h-10">
+                                                    <img class="w-full h-full rounded-full"
+                                                         src="https://source.boringavatars.com/beam/100/{{ log.user.name }}"
+                                                         alt="Avatar" />
+                                                </div>
+                                                <div class="ml-3">
+                                                    <p class="text-gray-900 whitespace-no-wrap">{{ log.user.name }}</p>
+                                                    <p class="text-gray-600 whitespace-no-wrap">{{ log.user.number }}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ log.item.description }}</p>
+                                            <p class="text-gray-600 whitespace-no-wrap">{{ log.item.category }}</p>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ log.request.quantity }}</p>
+                                            <p class="text-gray-600 whitespace-no-wrap">{{ log.request.unit }}</p>
+                                        </td>
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                            <p class="text-gray-900 whitespace-no-wrap">{{ log.created_at.date }}</p>
+                                            <p class="text-gray-600 whitespace-no-wrap">{{ log.created_at.time }}</p>
+                                        </td>
+                                        {% if log.status == 'PENDDING' %}
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <span class="relative inline-block px-3 py-1 font-semibold text-orange-900 leading-tight">
+                                                    <span aria-hidden
+                                                          class="absolute inset-0 opacity-50 rounded-full bg-orange-200"></span>
+                                                    <span class="relative">{{ log.status }}</span>
+
+                                                </span>
+                                            </td>
+                                        {% elif log.status == 'APPROVED' %}
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <span class="relative inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+                                                    <span aria-hidden
+                                                          class="absolute inset-0 opacity-50 rounded-full bg-green-200"></span>
+                                                    <span class="relative">{{ log.status }}</span>
+
+                                                </span>
+                                            </td>
+                                        {% else %}
+                                            <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                                                <span class="relative inline-block px-3 py-1 font-semibold text-red-900 leading-tight">
+                                                    <span aria-hidden
+                                                          class="absolute inset-0 opacity-50 rounded-full bg-red-200"></span>
+                                                    <span class="relative">{{ log.status }}</span>
+
+                                                </span>
+                                            </td>
+                                        {% endif %}
+                                        <td class="px-5 py-5 border-b border-gray-200 bg-white text-sm text-right">
+                                            <button type="button"
+                                                    class="inline-block text-gray-500 hover:text-gray-700"
+                                                    onclick="deleteLog({{ log.id }})">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                     version="1.1"
+                                                     width="32"
+                                                     height="32"
+                                                     viewBox="0 0 256 256"
+                                                     xml:space="preserve">
+                                                    <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;" transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                                                    <path d="M 68.842 90 H 21.158 c -4.251 0 -7.696 -3.446 -7.696 -7.696 v -52.09 h 63.077 v 52.09 C 76.538 86.554 73.092 90 68.842 90 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(188,60,60); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                    <path d="M 78.321 22.213 H 11.679 c -2.209 0 -4 -1.791 -4 -4 s 1.791 -4 4 -4 h 66.643 c 2.209 0 4 1.791 4 4 S 80.53 22.213 78.321 22.213 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(188,60,60); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                    <path d="M 57.815 22.213 h -25.63 c -2.209 0 -4 -1.791 -4 -4 V 7.696 C 28.185 3.453 31.637 0 35.881 0 h 18.238 c 4.244 0 7.696 3.453 7.696 7.696 v 10.517 C 61.815 20.422 60.024 22.213 57.815 22.213 z M 36.185 14.213 h 17.63 V 8 h -17.63 V 14.213 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(188,60,60); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                    <path d="M 54.784 78.235 c -2.209 0 -4 -1.791 -4 -4 V 44.976 c 0 -2.209 1.791 -4 4 -4 s 4 1.791 4 4 v 29.259 C 58.784 76.444 56.993 78.235 54.784 78.235 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                    <path d="M 35.216 78.235 c -2.209 0 -4 -1.791 -4 -4 V 44.976 c 0 -2.209 1.791 -4 4 -4 s 4 1.791 4 4 v 29.259 C 39.216 76.444 37.425 78.235 35.216 78.235 z" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                                                    </g>
+                                                </svg>
+                                            </button>
+                                        </td>
+
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        document.getElementById('download-csv').addEventListener('click', function() {
+            const url = window.location.origin + '/api/logs/csv/';
+
+            const tempLink = document.createElement('a');
+            tempLink.href = url;
+            tempLink.setAttribute('download', 'logs.csv');
+            tempLink.click();
+        });
+
+        function deleteLog(id) {
+            const url = window.location.origin + '/api/logs/delete/';
+            const data = {
+                id: id
+            };
+
+            fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                }).then(data => {
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+{% endblock script %}
